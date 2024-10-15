@@ -351,7 +351,9 @@ impl ModelWeights {
         let head_count_kv = md_get_llama_or_gemma("attention.head_count_kv")?.to_u32()? as usize;
         let block_count = md_get_llama_or_gemma("block_count")?.to_u32()? as usize;
         let embedding_length = md_get_llama_or_gemma("embedding_length")?.to_u32()? as usize;
-        let rope_dim = md_get_llama_or_gemma("rope.dimension_count")?.to_u32()? as usize;
+        let rope_dim = md_get_llama_or_gemma("rope.dimension_count")
+            .and_then(|v| v.to_u32())
+            .unwrap_or(128) as usize;
         // Strangely this value is generally 1e-6 in GGUF file but used to be 1e-5 by default.
         let rms_norm_eps =
             md_get_llama_or_gemma("attention.layer_norm_rms_epsilon")?.to_f32()? as f64;
